@@ -36,10 +36,14 @@
       </div>
 
       <div class="col" style="display: flex; flex-direction: column; font-family: emoji">
-        <label><input type="radio" name="calculator" value="sum" @click="actions='+'" /> ➕</label>
-        <label><input type="radio" name="calculator" value="subtract" @click="actions='-'" /> ➖</label>
-        <label><input type="radio" name="calculator" value="multiply" @click="actions='*'" /> ✖</label>
-        <label><input type="radio" name="calculator" value="divide" @click="actions='/'" /> ➗</label>
+        <label><input type="radio" name="calculator" value="sum" :checked="actions === '+'" @click="actions='+'" />
+          ➕</label>
+        <label><input type="radio" name="calculator" value="subtract" :checked="actions === '-'" @click="actions='-'" />
+          ➖</label>
+        <label><input type="radio" name="calculator" value="multiply" :checked="actions === '*'" @click="actions='*'" />
+          ✖</label>
+        <label><input type="radio" name="calculator" value="divide" :checked="actions === '/'" @click="actions='/'" />
+          ➗</label>
       </div>
 
       <div class="col">
