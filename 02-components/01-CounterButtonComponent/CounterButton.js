@@ -10,11 +10,15 @@ export default defineComponent({
       default: 0,
     },
   },
-
   emits: ['update:count'],
+  data() {
+    return {
+      counter: 0,
+    };
+  },
 
   // Шаблон лучше держать максимально простым, а логику выносить в методы
 
   // Шаблон потребуется отредактировать
-  template: `<button type="button" @click="$emit('update:count', +$event.target.value++)">{{count}}</button>`,
+  template: `<button type="button" @click="$emit('update:count', counter++)">{{ count }}</button>`,
 });
