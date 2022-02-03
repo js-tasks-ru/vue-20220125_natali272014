@@ -4,11 +4,11 @@ export default defineComponent({
   name: 'MeetupDescription',
 
   props: {
-    meetup: {
-      type: Object,
-      required: true,
+    description: {
+      type: String,
+      default: '',
     },
   },
 
-  template: `<p class="meetup-description">{{ meetup.description }}</p>`,
+  template: `<p class="meetup-description">{{ description }}</p>`,
 });

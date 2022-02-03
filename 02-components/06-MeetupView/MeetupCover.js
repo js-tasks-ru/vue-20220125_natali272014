@@ -4,14 +4,16 @@ export default defineComponent({
   name: 'MeetupCover',
 
   props: {
-    meetup: {
-      type: Object,
-      required: true,
+    title: {
+      type: String,
+    },
+    image: {
+      type: String,
     },
   },
 
   template: `
-    <div class="meetup-cover" :style="meetup.image && \`--bg-url: url('\${meetup.image}')\`">
-        <h1 class="meetup-cover__title">{{ meetup.title }}</h1>
+    <div class="meetup-cover" :style="image && \`--bg-url: url('\${image}')\`">
+        <h1 class="meetup-cover__title">{{ title }}</h1>
     </div>`,
 });

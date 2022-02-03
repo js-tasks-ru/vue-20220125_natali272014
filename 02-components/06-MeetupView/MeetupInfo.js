@@ -3,12 +3,7 @@ import { defineComponent } from './vendor/vue.esm-browser.js';
 export default defineComponent({
   name: 'MeetupInfo',
 
-  props: {
-    meetup: {
-      type: Object,
-      required: true,
-    },
-  },
+  props: ['organizer', 'place', 'date'],
 
   methods: {
     formatAsLocalDate(timestamp) {
@@ -24,15 +19,15 @@ export default defineComponent({
     <ul class="meetup-info">
       <li>
         <img class="icon meetup-info__icon" alt="icon" src="/assets/icons/icon-user.svg" />
-        {{ meetup.organizer }}
+        {{ organizer }}
       </li>
       <li>
         <img class="icon meetup-info__icon" alt="icon" src="/assets/icons/icon-map.svg" />
-        {{ meetup.place }}
+        {{ place }}
       </li>
       <li>
         <img class="icon meetup-info__icon" alt="icon" src="/assets/icons/icon-cal-lg.svg" />
-        <time :datetime="formatAsLocalDate(meetup.date)">{{ formatAsLocalDate(meetup.date) }}</time>
+        <time :datetime="formatAsLocalDate(date)">{{ formatAsLocalDate(date) }}</time>
       </li>
     </ul>`,
 });

@@ -29,22 +29,22 @@ export default defineComponent({
 
   template: `
     <div>
-      <meetup-cover :meetup="meetup"/>
+      <meetup-cover :title="meetup.title" :image="meetup.image"/>
 
       <ui-container>
         <div class="meetup">
           <div class="meetup__content">
             <h3>Описание</h3>
-            <meetup-description :meetup="meetup"/>
+            <meetup-description :description="meetup.description"/>
 
             <h3>Программа</h3>
              <meetup-agenda :agenda="meetup.agenda"/>
-             <template v-if="meetup.agenda.length===0" >
+             <template v-if="!meetup.agenda || meetup.agenda.length===0" >
                 <ui-alert>Программа пока пуста...</ui-alert>
              </template>
           </div>
           <div class="meetup__aside">
-            <meetup-info :meetup="meetup"/>
+            <meetup-info :organizer="meetup.organizer" :place="meetup.place" :date="meetup.date"/>
           </div>
         </div>
       </ui-container>
