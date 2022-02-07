@@ -22,14 +22,11 @@ export default {
 
   components: { UiIcon },
 
-  props: ['ref'],
-
   data() {
     return {
       toasts: [
         {
           id: null,
-          timer: 0,
           type: null,
         },
       ],
