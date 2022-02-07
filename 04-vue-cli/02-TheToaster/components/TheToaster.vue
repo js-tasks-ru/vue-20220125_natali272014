@@ -1,14 +1,16 @@
 <template>
   <div class="toasts">
-    <div class="toast toast_success">
-      <ui-icon class="toast__icon" icon="check-circle" />
-      <span>Success Toast Example</span>
-    </div>
+    <template v-for="toast in toasts" :key="toast.i">
+      <div v-if="toast.type === 1" class="toast toast_success">
+        <ui-icon class="toast__icon" icon="check-circle" />
+        <span>{{ toast.text }}</span>
+      </div>
 
-    <div class="toast toast_error">
-      <ui-icon class="toast__icon" icon="alert-circle" />
-      <span>Error Toast Example</span>
-    </div>
+      <div v-if="toast.type === 2" class="toast toast_error">
+        <ui-icon class="toast__icon" icon="alert-circle" />
+        <span>{{ toast.text }}</span>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -19,6 +21,50 @@ export default {
   name: 'TheToaster',
 
   components: { UiIcon },
+
+  props: ['ref'],
+
+  data() {
+    return {
+      toasts: [
+        {
+          id: null,
+          timer: 0,
+          type: null,
+        },
+      ],
+    };
+  },
+
+  methods: {
+    success(text) {
+      const toast = {
+        id: this.toasts.length,
+        type: 1,
+        text,
+      };
+
+      this.handlerToast(toast);
+    },
+
+    error(text) {
+      const toast = {
+        id: this.toasts.length,
+        type: 2,
+        text,
+      };
+
+      this.handlerToast(toast);
+    },
+    handlerToast(newToast, timer = 5000) {
+      this.toasts.push(newToast);
+
+      setTimeout(() => {
+        const toast = this.toasts.find((t) => t.id === newToast.id);
+        this.toasts.splice(this.toasts.indexOf(toast), 1);
+      }, timer);
+    },
+  },
 };
 </script>
 
