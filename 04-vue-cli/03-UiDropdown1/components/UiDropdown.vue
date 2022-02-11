@@ -1,12 +1,13 @@
 <template>
-  <div class="dropdown" :class="{ dropdown_opened: isActive }">
+  <div v-if="hasOptions" class="dropdown" :class="{ dropdown_opened: isActive }">
     <button
       type="button"
       class="dropdown__toggle"
-      :class="{ dropdown__toggle_icon: options.length > 2 }"
+      :class="{ dropdown__toggle_icon: hasIcon }"
       @click="isActive ? (isActive = false) : (isActive = true)"
     >
-      <ui-icon v-if="options.length > 2" :icon="selected.icon" class="dropdown__icon" />
+      <ui-icon v-if="hasIcon" :icon="selected.icon" class="dropdown__icon" />
+
       <span> {{ selected.text }} </span>
     </button>
 
@@ -15,12 +16,12 @@
         v-for="option in options"
         :key="option.value"
         class="dropdown__item"
-        :class="{ dropdown__item_icon: options.length > 2 }"
+        :class="{ dropdown__item_icon: hasIcon }"
         role="option"
         type="button"
         @click="$emit('update:modelValue', setActive(option))"
       >
-        <ui-icon v-if="options.length > 2" :icon="option.icon" class="dropdown__icon" />
+        <ui-icon v-if="hasIcon" :icon="option.icon" class="dropdown__icon" />
         {{ option.text }}
       </button>
     </div>
@@ -48,22 +49,28 @@ export default {
   data() {
     return {
       isActive: false,
-      selected: {
-        text: this.title,
-        icon: '',
-        value: '',
-      },
     };
   },
-  watch: {
-    modelValue(newValue, oldValue) {
-      if (newValue === 'registration') this.selected = this.options[0];
+
+  computed: {
+    hasIcon() {
+      if (this.options.find((el) => el.icon)) return true;
+      else return false;
+    },
+    hasOptions() {
+      if (!this.options || this.options.length === 0) return false;
+      else return true;
+    },
+
+    selected() {
+      if (this.modelValue) return this.options.find((el) => el.value === this.modelValue);
+      else return { text: this.title };
     },
   },
+
   methods: {
     setActive(option) {
       this.isActive = false;
-      this.selected = option;
       return option.value;
     },
   },
