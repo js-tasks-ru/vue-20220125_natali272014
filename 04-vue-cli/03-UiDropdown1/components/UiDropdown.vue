@@ -11,7 +11,7 @@
       <span> {{ selected.text }} </span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
+    <div v-show="isActive" class="dropdown__menu" role="listbox">
       <button
         v-for="option in options"
         :key="option.value"
