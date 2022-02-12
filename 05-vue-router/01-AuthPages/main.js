@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 import App from './App';
-import { router } from './router';
+import { router } from './router/index.js';
 
 import '@/assets/styles/_button.css';
 import '@/assets/styles/_checkbox.css';
