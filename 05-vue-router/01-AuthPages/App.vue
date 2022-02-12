@@ -2,7 +2,9 @@
   <div class="wrapper">
     <meetups-header />
     <main class="main">
-      <div>CURRENT PAGE</div>
+      <div>
+        <router-view />
+      </div>
     </main>
     <meetups-footer />
   </div>
@@ -11,6 +13,7 @@
 <script>
 import MeetupsHeader from './components/MeetupsHeader';
 import MeetupsFooter from './components/MeetupsFooter';
+import PageIndex from './views/PageIndex';
 
 export default {
   name: 'App',
@@ -18,6 +21,7 @@ export default {
   components: {
     MeetupsFooter,
     MeetupsHeader,
+    PageIndex,
   },
 };
 </script>
