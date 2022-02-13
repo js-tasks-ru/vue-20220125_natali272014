@@ -9,7 +9,10 @@ export const router = createRouter({
       return {
         el: to.hash,
       };
-    } else if ((to.meta.saveScrollPosition || from.meta.saveScrollPosition) && from.meta.saveScrollPosition === to.meta.saveScrollPosition) {
+    } else if (
+      (to.meta.saveScrollPosition || from.meta.saveScrollPosition) &&
+      from.meta.saveScrollPosition === to.meta.saveScrollPosition
+    ) {
       return false;
     } else {
       return { top: 0, left: 0 };
