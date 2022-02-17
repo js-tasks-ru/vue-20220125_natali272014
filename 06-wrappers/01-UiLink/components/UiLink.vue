@@ -1,6 +1,5 @@
 <template>
   <component :is="tag" class="link"> <slot /> </component>
-  <!-- <a class="link">Link!</a> -->
 </template>
 
 <script>
