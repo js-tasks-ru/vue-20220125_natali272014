@@ -1,15 +1,101 @@
 <template>
   <div class="image-uploader">
-    <label class="image-uploader__preview image-uploader__preview-loading" style="--bg-url: url('/link.jpeg')">
-      <span class="image-uploader__text">Загрузить изображение</span>
-      <input type="file" accept="image/*" class="image-uploader__input" />
+    <label
+      class="image-uploader__preview"
+      :class="{ 'image-uploader__preview-loading': state === $options.States.LOADING }"
+      :style="bgStyles"
+      @click="delImage"
+    >
+      <span class="image-uploader__text">{{ textLoad }}</span>
+      <input
+        ref="input"
+        v-bind="$attrs"
+        type="file"
+        accept="image/*"
+        class="image-uploader__input"
+        @change="pickFile"
+      />
     </label>
   </div>
 </template>
 
 <script>
+const States = {
+  NOFILE: 'NOFILE',
+  LOADING: 'LOADING',
+  SUCCESS: 'SUCCESS',
+};
+
 export default {
   name: 'UiImageUploader',
+  inheritAttrs: false,
+
+  props: {
+    preview: String,
+    uploader: Function,
+  },
+
+  States,
+
+  emits: ['remove', 'select', 'upload', 'error'],
+
+  data() {
+    return {
+      state: States.NOFILE,
+      images: this.preview,
+      id: 0,
+    };
+  },
+
+  computed: {
+    textLoad() {
+      if (this.state == States.NOFILE) return 'Загрузить изображение';
+      if (this.state == States.LOADING) return 'Загрузка...';
+      else return 'Удалить изображение';
+    },
+    bgStyles() {
+      if (this.images) return `--bg-url: url('${this.images}')`;
+      else return '';
+    },
+  },
+
+  created() {
+    if (this.preview) this.state = States.SUCCESS;
+  },
+
+  methods: {
+    get_image(file) {
+      this.state = States.LOADING;
+      this.uploader(file)
+        .then((result) => {
+          this.state = States.SUCCESS;
+          this.$emit('upload', result);
+        })
+        .catch((error) => {
+          this.$emit('error', error);
+          this.state = States.NOFILE;
+          this.$refs.input.value = '';
+          this.images = null;
+        });
+    },
+    pickFile() {
+      let input = this.$refs.input;
+      let file = input.files;
+      this.$emit('select', file[0]);
+      this.images = URL.createObjectURL(file[0]);
+      if (this.uploader) this.get_image(file[0]);
+      else this.state = States.SUCCESS;
+    },
+    delImage(event) {
+      if (this.state === States.SUCCESS) {
+        event.preventDefault();
+        this.images = null;
+        this.$emit('remove');
+        this.state = States.NOFILE;
+        this.$refs.input.value = '';
+      }
+    },
+  },
 };
 </script>
 
