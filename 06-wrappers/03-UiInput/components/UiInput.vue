@@ -10,24 +10,16 @@
     <div v-if="$slots['left-icon']" class="input-group__icon">
       <slot name="left-icon" />
     </div>
-    <template v-if="!multiline">
-      <input
-        ref="input"
-        v-bind="$attrs"
-        v-model="modelValueProxy"
-        class="form-control"
-        :class="{ 'form-control_rounded': rounded, 'form-control_sm': small }"
-      />
-    </template>
-    <template v-if="multiline">
-      <textarea
-        ref="input"
-        v-bind="$attrs"
-        v-model="modelValueProxy"
-        class="form-control"
-        :class="{ 'form-control_rounded': rounded, 'form-control_sm': small }"
-      ></textarea>
-    </template>
+
+    <component
+      :is="tagEl"
+      ref="input"
+      v-bind="$attrs"
+      :value="modelValueProxy"
+      class="form-control"
+      :class="{ 'form-control_rounded': rounded, 'form-control_sm': small }"
+      @input="modelValueProxy = $event.target.value"
+    />
     <div v-if="$slots['right-icon']" class="input-group__icon">
       <slot name="right-icon" />
     </div>
@@ -47,6 +39,10 @@ export default {
   },
   emits: ['update:modelValue'],
   computed: {
+    tagEl() {
+      if (this.multiline) return 'textarea';
+      else return 'input';
+    },
     modelValueProxy: {
       get() {
         return this.modelValue;
