@@ -1,5 +1,5 @@
 <template>
-  <ui-input v-model="modelValueProxy" v-bind="$attrs" :type="type">
+  <ui-input ref="input" v-model="modelValueProxy" v-bind="$attrs" :type="type">
     <template v-for="slotName in Object.keys($slots)" #[slotName]>
       <slot :name="slotName" />
     </template>
@@ -29,22 +29,7 @@ export default {
         else return this.modelValue;
       },
       set(value) {
-        let year = 0,
-          month = 0,
-          day = 0,
-          hour = 0,
-          minute = 0,
-          second = 0;
-
-        if (value.length === 5) [hour, minute] = value.split(':');
-        else if (value.length === 8) [hour, minute, second] = value.split(':');
-        else if (value.length === 10) [year, month, day] = value.split('-');
-        else if (value.length > 10) {
-          [year, month, day] = value.split('-');
-          [hour, minute] = value.split(':');
-        }
-        if (year + month + day + minute + second === 0) this.$emit('update:modelValue', NaN);
-        else this.$emit('update:modelValue', Date.UTC(year, month, day, hour, minute, second));
+        this.$emit('update:modelValue', this.$refs.input.$refs.input.valueAsNumber);
       },
     },
   },
