@@ -1,6 +1,6 @@
 <template>
   <ui-input v-model="modelValueProxy" v-bind="$attrs" :type="type">
-    <template v-for="slotName of Object.keys($slots)" #[slotName]>
+    <template v-for="slotName in Object.keys($slots)" #[slotName]>
       <slot :name="slotName" />
     </template>
   </ui-input>
