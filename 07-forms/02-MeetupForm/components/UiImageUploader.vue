@@ -1,65 +1,98 @@
-<!-- STUB: ЭТО ЗАГЛУШКА ДЛЯ РУЧНОГО ТЕСТИРОВАНИЯ -->
-<!-- ВЫ МОЖЕТЕ ИСПОЛЬЗОВАТЬ ПОЛНУЮ ВЕРСИЮ КОМПОНЕНТА, ЕСЛИ УЖЕ РЕАЛИЗОВАЛИ ЕГО -->
-
 <template>
   <div class="image-uploader">
-    <label class="image-uploader__preview" :style="src && `--bg-url: url('${src}')`" @click.stop.prevent="handleClick">
-      <span class="image-uploader__text">{{ src ? 'Удалить' : 'Загрузить изображение' }}</span>
+    <label
+      class="image-uploader__preview"
+      :class="{ 'image-uploader__preview-loading': state === $options.States.LOADING }"
+      :style="bgStyles"
+      @click="delImage"
+    >
+      <span class="image-uploader__text">{{ textLoad }}</span>
       <input
         ref="input"
+        v-bind="$attrs"
         type="file"
         accept="image/*"
         class="image-uploader__input"
-        v-bind="$attrs"
-        @change="mockFileSelect"
+        @change="pickFile"
       />
     </label>
   </div>
 </template>
 
 <script>
+const States = {
+  NOFILE: 'NOFILE',
+  LOADING: 'LOADING',
+  SUCCESS: 'SUCCESS',
+};
+
 export default {
   name: 'UiImageUploader',
   inheritAttrs: false,
 
   props: {
-    uploader: {
-      type: Function,
-    },
-
-    preview: {
-      type: String,
-    },
+    preview: String,
+    uploader: Function,
   },
 
-  emits: ['upload', 'select', 'error', 'remove'],
+  States,
+
+  emits: ['remove', 'select', 'upload', 'error'],
 
   data() {
     return {
-      src: this.preview,
+      state: States.NOFILE,
+      images: this.preview,
+      id: 0,
     };
   },
 
+  computed: {
+    textLoad() {
+      if (this.state == States.NOFILE) return 'Загрузить изображение';
+      if (this.state == States.LOADING) return 'Загрузка...';
+      else return 'Удалить изображение';
+    },
+    bgStyles() {
+      if (this.images) return `--bg-url: url('${this.images}')`;
+      else return '';
+    },
+  },
+
+  created() {
+    if (this.preview) this.state = States.SUCCESS;
+  },
+
   methods: {
-    mockFileSelect() {
-      this.src = 'https://course-vue.javascript.ru/api/images/1';
-      const file = new File(['abc'], 'abc.jpeg', {
-        type: 'image/jpeg',
-      });
-      this.$emit('select', this.$refs.input.files[0] || file);
+    get_image(file) {
+      this.state = States.LOADING;
+      this.uploader(file)
+        .then((result) => {
+          this.state = States.SUCCESS;
+          this.$emit('upload', result);
+        })
+        .catch((error) => {
+          this.$emit('error', error);
+          this.state = States.NOFILE;
+          this.$refs.input.value = '';
+          this.images = null;
+        });
     },
-
-    mockRemoveFile() {
-      this.src = null;
-      this.$refs.input.value = '';
-      this.$emit('remove');
+    pickFile() {
+      let input = this.$refs.input;
+      let file = input.files;
+      this.$emit('select', file[0]);
+      this.images = URL.createObjectURL(file[0]);
+      if (this.uploader) this.get_image(file[0]);
+      else this.state = States.SUCCESS;
     },
-
-    handleClick() {
-      if (this.src && this.src !== this.preview) {
-        this.mockRemoveFile();
-      } else {
-        this.mockFileSelect();
+    delImage(event) {
+      if (this.state === States.SUCCESS) {
+        event.preventDefault();
+        this.images = null;
+        this.$emit('remove');
+        this.state = States.NOFILE;
+        this.$refs.input.value = '';
       }
     },
   },
